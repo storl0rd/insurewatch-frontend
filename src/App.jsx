@@ -74,6 +74,12 @@ export default function App() {
         {tab === 'claims'      && <ClaimsPanel customer={customer} />}
         {tab === 'chaos'       && <ChaosPanel />}
       </main>
+
+      {/* ── Footer ─────────────────────────────────── */}
+      <footer className="footer">
+        <p>Powered by <a href="https://otel.guru" target="_blank" rel="noopener noreferrer">otel.guru</a></p>
+        <p>For demonstration purposes only</p>
+      </footer>
     </div>
   )
 }

@@ -350,6 +350,29 @@ body {
 /* ── Divider ──────────────────────────────────────────── */
 .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 
+/* ── Footer ───────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.footer p {
+  font-size: .78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.footer a:hover {
+  text-decoration: underline;
+  color: var(--accent-d);
+}
+
 /* ── Responsive ───────────────────────────────────────── */
 @media (max-width: 640px) {
   .header { padding: 0 16px; }
