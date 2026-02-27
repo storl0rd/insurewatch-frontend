@@ -7,6 +7,7 @@ const STATUS_COLOR = { pending: 'amber', approved: 'green', rejected: 'red', pro
 
 export default function ClaimsPanel({ customer }) {
   const [claims, setClaims]       = useState(null)
+  const [policies, setPolicies]   = useState(null)
   const [loading, setLoading]     = useState(true)
   const [error, setError]         = useState(null)
   const [showForm, setShowForm]   = useState(false)
@@ -18,9 +19,14 @@ export default function ClaimsPanel({ customer }) {
 
   const load = () => {
     setLoading(true); setError(null)
-    fetch(`${API}/api/claims`)
-      .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json() })
-      .then(data => setClaims(Array.isArray(data) ? data : []))
+    Promise.all([
+      fetch(`${API}/api/claims`).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json() }),
+      fetch(`${API}/api/policy/${customer}`).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json() })
+    ])
+      .then(([claimsData, policiesData]) => {
+        setClaims(Array.isArray(claimsData) ? claimsData : [])
+        setPolicies(Array.isArray(policiesData) ? policiesData : [])
+      })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }
@@ -35,17 +41,22 @@ export default function ClaimsPanel({ customer }) {
     e.preventDefault()
     setSubmitting(true); setSubmitMsg(null)
     try {
+      const activePolicy = policies?.find(p => p.status === 'active')
+      const policyNumber = activePolicy?.policyNumber
+      if (!policyNumber) {
+        throw new Error('No active policy found. Please set up a policy first.')
+      }
+
       const res = await fetch(`${API}/api/claims`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customerId: customer,
           customer_id: customer,
-          type: form.type,
+          policy_number: policyNumber,
+          claim_type: form.type,
           amount: parseFloat(form.amount),
           description: form.description,
           incident_date: form.incident_date,
-          status: 'pending',
         }),
       })
       if (!res.ok) throw new Error(`Server error ${res.status}`)
