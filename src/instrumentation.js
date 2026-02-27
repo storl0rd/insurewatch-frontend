@@ -7,6 +7,13 @@ import { Resource } from '@opentelemetry/resources';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
 const otlpEndpoint = import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
+const otlpHeaders = import.meta.env.VITE_OTEL_EXPORTER_OTLP_HEADERS ?
+  Object.fromEntries(
+    import.meta.env.VITE_OTEL_EXPORTER_OTLP_HEADERS.split(',').map(h => {
+      const [key, value] = h.split('=');
+      return [key.trim(), value.trim()];
+    })
+  ) : {};
 
 const provider = new WebTracerProvider({
   resource: new Resource({
@@ -21,6 +28,7 @@ provider.addSpanProcessor(
   new BatchSpanProcessor(
     new OTLPTraceExporter({
       url: `${otlpEndpoint}/v1/traces`,
+      headers: otlpHeaders,
     })
   )
 );
