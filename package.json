@@ -18,7 +18,7 @@
     "@opentelemetry/resources": "^1.28.0",
     "@opentelemetry/sdk-trace-web": "^1.28.0",
     "@opentelemetry/semantic-conventions": "^1.27.0",
-    "zone.js": "^0.15.0"
+    "zone.js": "0.14.10"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
